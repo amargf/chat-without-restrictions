@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ماسنجر برو - متعدد اللغات</title>
+    <title>Messenger Pro - Full Multilingual</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
@@ -57,7 +57,6 @@
             border-radius: 18px; 
             font-size: 15px; 
             line-height: 1.4;
-            position: relative;
         }
         .sent { 
             align-self: flex-end; 
@@ -72,7 +71,6 @@
             border-bottom-left-radius: 4px;
         }
 
-        /* لغات مختلفة: تعديل انحناء الزوايا حسب الاتجاه */
         [dir="ltr"] .sent { border-bottom-right-radius: 18px; border-bottom-left-radius: 4px; }
         [dir="ltr"] .received { border-bottom-left-radius: 18px; border-bottom-right-radius: 4px; }
 
@@ -105,19 +103,17 @@
         }
 
         .btn-action { color: var(--accent); font-size: 20px; cursor: pointer; background: none; border: none; padding: 5px; }
-        .lang-btn { font-size: 14px; font-weight: bold; background: #3a3b3c; color: white; border: none; padding: 5px 10px; border-radius: 10px; cursor: pointer; }
+        .lang-btn { font-size: 12px; font-weight: bold; background: #3a3b3c; color: white; border: none; padding: 6px 12px; border-radius: 10px; cursor: pointer; }
 
         #overlay { position: fixed; inset: 0; background: #18191a; z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .login-card { width: 85%; max-width: 350px; text-align: center; }
-        .input-group { position: relative; width: 100%; }
-        .input-group i { position: absolute; right: 15px; top: 25px; color: #888; }
+        .input-group { position: relative; width: 100%; margin: 10px 0; }
+        .input-group i { position: absolute; right: 15px; top: 15px; color: #888; }
         [dir="ltr"] .input-group i { left: 15px; right: auto; }
-        .m-input { width: 100%; padding: 14px 40px; margin: 10px 0; border-radius: 12px; border: 1px solid #3e4042; background: #242526; color: white; }
-        .m-btn { width: 100%; padding: 14px; background: var(--accent); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .m-input { width: 100%; padding: 14px 40px; border-radius: 12px; border: 1px solid #3e4042; background: #242526; color: white; }
+        .m-btn { width: 100%; padding: 14px; background: var(--accent); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
 
         .hidden { display: none !important; }
-        .recording-active { color: #f3425f !important; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0.4; } }
         .msg-img { max-width: 100%; border-radius: 15px; margin-top: 5px; }
         audio { height: 35px; width: 170px; margin-top: 5px; }
     </style>
@@ -159,7 +155,7 @@
 <header>
     <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle">EN</button>
     <div class="header-info">
-        <h1 id="room-display">الدردشة</h1>
+        <h1 id="tr-chat-title">الدردشة</h1>
         <div class="status" id="tr-online">● متصل الآن</div>
     </div>
     <button class="btn-action" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i></button>
@@ -187,17 +183,18 @@
     let messagesRef = null;
     let currentLang = 'ar';
 
-    // القاموس للترجمة
     const translations = {
         ar: {
             welcome: "مرحباً بك", login: "دخول", security: "تأمين الدردشة", joinRoom: "دخول الغرفة المشفرة",
-            roomInfo: "بيانات الغرفة", confirm: "تأكيد الدخول", online: "● متصل الآن",
-            userPlaceholder: "اكتب اسمك للمتابعة", roomPlaceholder: "اسم الغرفة", passPlaceholder: "كلمة السر"
+            roomInfo: "بيانات الغرفة", confirm: "تأكيد الدخول", online: "● متصل الآن", chatTitle: "الدردشة",
+            userPlace: "اكتب اسمك للمتابعة", roomPlace: "اسم الغرفة", passPlace: "كلمة السر",
+            inputPlace: "Aa", imgPrompt: "رابط الصورة:"
         },
         en: {
-            welcome: "Welcome", login: "Login", security: "Chat Security", joinRoom: "Join Secure Room",
-            roomInfo: "Room Details", confirm: "Confirm Join", online: "● Online Now",
-            userPlaceholder: "Type your name...", roomPlaceholder: "Room Name", passPlaceholder: "Password"
+            welcome: "Welcome", login: "Login", security: "Security", joinRoom: "Enter Private Room",
+            roomInfo: "Room Details", confirm: "Confirm", online: "● Online", chatTitle: "Messenger",
+            userPlace: "Type your name...", roomPlace: "Room Name", passPlace: "Password",
+            inputPlace: "Type a message...", imgPrompt: "Direct Image URL:"
         }
     };
 
@@ -205,10 +202,9 @@
         currentLang = (currentLang === 'ar') ? 'en' : 'ar';
         const html = document.getElementById('main-html');
         html.dir = (currentLang === 'ar') ? 'rtl' : 'ltr';
-        html.lang = currentLang;
         document.getElementById('lang-toggle').innerText = (currentLang === 'ar') ? 'EN' : 'AR';
         
-        // تطبيق الترجمة
+        // تطبيق الترجمة على كافة النصوص
         document.getElementById('tr-welcome').innerText = translations[currentLang].welcome;
         document.getElementById('tr-login').innerText = translations[currentLang].login;
         document.getElementById('tr-security').innerText = translations[currentLang].security;
@@ -216,12 +212,16 @@
         document.getElementById('tr-room-info').innerText = translations[currentLang].roomInfo;
         document.getElementById('tr-confirm').innerText = translations[currentLang].confirm;
         document.getElementById('tr-online').innerText = translations[currentLang].online;
+        document.getElementById('tr-chat-title').innerText = translations[currentLang].chatTitle;
         
-        document.getElementById('username-input').placeholder = translations[currentLang].userPlaceholder;
-        document.getElementById('room-name-input').placeholder = translations[currentLang].roomPlaceholder;
-        document.getElementById('room-pass-input').placeholder = translations[currentLang].passPlaceholder;
+        // تلميحات الإدخال
+        document.getElementById('username-input').placeholder = translations[currentLang].userPlace;
+        document.getElementById('room-name-input').placeholder = translations[currentLang].roomPlace;
+        document.getElementById('room-pass-input').placeholder = translations[currentLang].passPlace;
+        document.getElementById('msgInput').placeholder = translations[currentLang].inputPlace;
     }
 
+    // تهيئة الدردشة والوظائف (نفس منطق الكود السابق)
     if(currentUsername) {
         document.getElementById('step-name').classList.add('hidden');
         document.getElementById('step-choice').classList.remove('hidden');
@@ -229,18 +229,10 @@
 
     function saveUsername() {
         const val = document.getElementById('username-input').value.trim();
-        if(val) {
-            currentUsername = val;
-            localStorage.setItem("chat_user", val);
-            document.getElementById('step-name').classList.add('hidden');
-            document.getElementById('step-choice').classList.remove('hidden');
-        }
+        if(val) { currentUsername = val; localStorage.setItem("chat_user", val); document.getElementById('step-name').classList.add('hidden'); document.getElementById('step-choice').classList.remove('hidden'); }
     }
 
-    function showPrivateForm() {
-        document.getElementById('step-choice').classList.add('hidden');
-        document.getElementById('step-private').classList.remove('hidden');
-    }
+    function showPrivateForm() { document.getElementById('step-choice').classList.add('hidden'); document.getElementById('step-private').classList.remove('hidden'); }
 
     function joinPrivate() {
         let rName = document.getElementById('room-name-input').value.trim();
@@ -257,7 +249,7 @@
     }
 
     function setupChat(name, path) {
-        document.getElementById("room-display").innerText = name;
+        document.getElementById("tr-chat-title").innerText = name;
         messagesRef = firebase.database().ref("messages/" + path);
         messagesRef.on("child_added", s => {
             const d = s.val();
@@ -275,18 +267,16 @@
 
     function sendMessage() {
         const i = document.getElementById("msgInput");
-        if(i.value.trim() && messagesRef) {
-            messagesRef.push({user: currentUsername, text: i.value, type: 'text'});
-            i.value = "";
-        }
+        if(i.value.trim() && messagesRef) { messagesRef.push({user: currentUsername, text: i.value, type: 'text'}); i.value = ""; }
     }
 
     function sendImageUrl() {
-        const u = prompt(currentLang === 'ar' ? "رابط الصورة:" : "Image URL:");
+        const u = prompt(translations[currentLang].imgPrompt);
         if(u && messagesRef) messagesRef.push({user: currentUsername, url: u, type: 'image'});
     }
 
     document.getElementById("msgInput").addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
 </script>
 </body>
-</html>
+    </html>
+    
