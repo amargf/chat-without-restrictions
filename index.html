@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>amargf_chat</title>
-    <meta property="og:title" content="amargf_chat">
 
     <style>
         :root {
@@ -17,143 +16,130 @@
             --text-gray: #8696a0;
         }
 
-        html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
         body { background-color: var(--bg-main); display: flex; flex-direction: column; color: white; }
         
-        header { background-color: var(--bg-header); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b4a54; z-index: 10; flex-shrink: 0; }
-        
-        #chat-box { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 20px 15px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 8px; 
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); 
-            background-blend-mode: overlay;
-            background-color: rgba(11, 20, 26, 0.95);
-        }
-        
-        .message { max-width: 80%; padding: 8px 12px; border-radius: 8px; font-size: 15px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.2); word-wrap: break-word; }
-        .sent { align-self: flex-end; background-color: var(--sent-msg); border-top-left-radius: 0; }
-        .received { align-self: flex-start; background-color: var(--received-msg); border-top-right-radius: 0; }
-        
-        .msg-user { font-weight: bold; font-size: 12px; display: block; margin-bottom: 2px; }
-        .msg-time { font-size: 10px; color: var(--text-gray); float: left; margin-top: 5px; margin-right: 8px; }
-        .msg-img { max-width: 100%; border-radius: 5px; margin: 5px 0; display: block; }
-
-        footer { background: var(--bg-header); padding: 10px; display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
-        #msgInput { flex: 1; padding: 12px 15px; border-radius: 25px; border: none; background: #2a3942; color: white; outline: none; font-size: 16px; }
-        .send-btn { background: var(--accent); border: none; border-radius: 50%; width: 45px; height: 45px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-
-        /* Splash Screen - العودة للألوان الأصلية وإلغاء الحركة */
+        /* شاشة الترحيب المعدلة */
         #splash-screen {
             position: fixed;
             inset: 0;
-            background: #0b141a; /* اللون الأصلي */
+            background: #0b141a;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             z-index: 2000;
-            color: white;
-            padding: 20px;
-        }
-
-        .logo-box {
-            margin-bottom: 30px;
         }
 
         .logo-icon {
-            font-size: 100px;
+            font-size: 90px;
             color: var(--accent);
+            margin-bottom: 10px;
             display: block;
-            margin-bottom: 20px;
-            /* تم حذف خاصية التحريك (Animation) */
+            /* إضافة حركة النبض */
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .splash-title {
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 24px;
+            color: #ffffff; /* أبيض */
             margin: 0;
-            color: white;
+            opacity: 0.9;
         }
 
         .splash-subtitle {
-            font-size: 22px;
-            color: var(--accent);
-            margin: 10px 0 0 0;
+            font-size: 32px;
+            color: #ffffff; /* أبيض */
+            margin: 5px 0 40px 0;
             font-weight: bold;
         }
 
         .start-button {
             background-color: var(--accent);
             color: #0b141a;
-            padding: 15px 60px;
-            border-radius: 30px;
+            padding: 15px 70px;
+            border-radius: 40px;
             font-size: 18px;
             font-weight: bold;
             border: none;
             cursor: pointer;
-            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 168, 132, 0.2);
         }
 
-        .start-button:active { transform: scale(0.95); }
+        /* تنسيقات الدردشة */
+        header { background-color: var(--bg-header); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b4a54; flex-shrink: 0; }
+        
+        #chat-box { 
+            flex: 1; overflow-y: auto; padding: 20px 15px; display: flex; flex-direction: column; gap: 8px; 
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); 
+            background-blend-mode: overlay; background-color: rgba(11, 20, 26, 0.95);
+        }
+        
+        .message { max-width: 80%; padding: 8px 12px; border-radius: 8px; font-size: 15px; position: relative; word-wrap: break-word; }
+        .sent { align-self: flex-end; background-color: var(--sent-msg); }
+        .received { align-self: flex-start; background-color: var(--received-msg); }
+        
+        .msg-user { font-weight: bold; font-size: 12px; display: block; margin-bottom: 2px; }
+        .msg-time { font-size: 10px; color: var(--text-gray); float: left; margin-top: 5px; }
 
-        /* Overlay */
+        footer { background: var(--bg-header); padding: 10px; display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+        #msgInput { flex: 1; padding: 12px 15px; border-radius: 25px; border: none; background: #2a3942; color: white; outline: none; }
+        .send-btn { background: var(--accent); border: none; border-radius: 50%; width: 45px; height: 45px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+
         #overlay { position: fixed; inset: 0; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
         .modal-card { background: #222e35; padding: 30px; border-radius: 15px; width: 100%; max-width: 350px; text-align: center; border: 1px solid #3b4a54; }
-        .custom-btn { width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
-        .btn-green { background-color: var(--accent); color: #0b141a; }
         .modern-input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #3b4a54; background: #2a3942; color: white; text-align: center; box-sizing: border-box; }
         .hidden { display: none !important; }
+        .custom-btn { width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div id="splash-screen">
-    <div class="logo-box">
-        <span class="logo-icon">💬</span>
-        <h1 class="splash-title">مرحباً بك في</h1>
-        <p class="splash-subtitle">amargf_chat</p>
-    </div>
+    <div class="logo-icon">💬</div>
+    <h1 class="splash-title">مرحباً بك في</h1>
+    <p class="splash-subtitle">amargf_chat</p>
     <button class="start-button" onclick="startChat()">بدء الدردشة</button>
 </div>
 
 <div id="overlay" class="hidden">
     <div id="step-name" class="modal-card">
         <h2 style="color:var(--accent)">amargf_chat</h2>
-        <p>أدخل اسمك المستعار للدخول</p>
-        <input type="text" id="username-input" class="modern-input" placeholder="الاسم هنا...">
-        <button class="custom-btn btn-green" onclick="saveUsername()">دخول</button>
+        <input type="text" id="username-input" class="modern-input" placeholder="اسمك المستعار">
+        <button class="custom-btn" style="background:var(--accent)" onclick="saveUsername()">متابعة</button>
     </div>
     
     <div id="step-choice" class="modal-card hidden">
-        <h2>اختر نوع الدردشة</h2>
-        <button class="custom-btn btn-green" onclick="joinPublic()">الشات العام</button>
-        <button class="custom-btn" style="background:#2a3942; color:white;" onclick="showPrivateForm()">غرفة خاصة</button>
+        <h2>نوع الدردشة</h2>
+        <button class="custom-btn" style="background:var(--accent)" onclick="joinPublic()">الشات العام</button>
+        <button class="custom-btn" style="background:#2a3942; color:white; border:1px solid var(--accent);" onclick="showPrivateForm()">غرفة خاصة</button>
     </div>
 
     <div id="step-private" class="modal-card hidden">
         <h2>بيانات الغرفة</h2>
         <input type="text" id="room-name-input" class="modern-input" placeholder="اسم الغرفة">
         <input type="password" id="room-pass-input" class="modern-input" placeholder="كلمة السر">
-        <button class="custom-btn btn-green" onclick="joinPrivate()">دخول</button>
-        <button class="custom-btn" style="background:transparent; color:var(--text-gray)" onclick="location.reload()">رجوع</button>
+        <button class="custom-btn" style="background:var(--accent)" onclick="joinPrivate()">دخول</button>
     </div>
 </div>
 
 <header class="hidden">
-    <button onclick="location.reload()" style="background:#ea0038; border:none; color:white; border-radius:8px; padding:6px 12px; cursor:pointer; font-weight:bold;">خروج</button>
-    <div id="room-display" style="font-weight:bold">amargf - الرئيسية</div>
+    <button onclick="location.reload()" style="background:#ea0038; border:none; color:white; border-radius:8px; padding:6px 12px; cursor:pointer;">خروج</button>
+    <div id="room-display" style="font-weight:bold">الرئيسية</div>
     <div id="user-display" style="font-size:11px; color:var(--accent)"></div>
 </header>
 
 <div id="chat-box" class="hidden"></div>
 
 <footer class="hidden">
-    <button class="icon-btn" onclick="sendImageUrl()" style="background:none; border:none; font-size:24px; cursor:pointer;">🖼️</button>
+    <button class="send-btn" style="background:none; color:var(--text-gray)" onclick="sendImageUrl()">🖼️</button>
     <input type="text" id="msgInput" placeholder="اكتب رسالة..." autocomplete="off">
     <button class="send-btn" onclick="sendMessage()">➤</button>
 </footer>
@@ -167,12 +153,6 @@
 
     let currentUsername = localStorage.getItem("chat_user");
     let messagesRef = null;
-
-    function stringToColor(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
-        return `hsl(${hash % 360}, 75%, 75%)`;
-    }
 
     function startChat() {
         document.getElementById('splash-screen').classList.add('hidden');
@@ -201,62 +181,43 @@
 
     function joinPublic() {
         document.getElementById("overlay").classList.add("hidden");
-        document.querySelector('header').classList.remove('hidden');
-        document.getElementById('chat-box').classList.remove('hidden');
-        document.querySelector('footer').classList.remove('hidden');
+        showMainChat();
         setupChat("amargf العام", "public_chat");
     }
 
     function joinPrivate() {
         let roomName = document.getElementById('room-name-input').value.trim() || "غرفة";
         let roomPass = document.getElementById('room-pass-input').value.trim();
-        if(!roomPass) return alert("يرجى إدخال كلمة سر");
+        if(!roomPass) return;
 
         const roomRef = firebase.database().ref("room_settings/" + roomName);
         roomRef.once('value').then((snapshot) => {
             const data = snapshot.val();
-            if (!data) {
-                roomRef.set({ password: roomPass });
-                startPrivate(roomName);
-            } else if (data.password === roomPass) {
-                startPrivate(roomName);
-            } else {
-                alert("كلمة السر خاطئة!");
-            }
+            if (!data || data.password === roomPass) {
+                if(!data) roomRef.set({ password: roomPass });
+                document.getElementById("overlay").classList.add("hidden");
+                showMainChat();
+                setupChat("🔒 " + roomName, "private_" + roomName);
+            } else { alert("خطأ في كلمة السر"); }
         });
     }
 
-    function startPrivate(name) {
-        document.getElementById("overlay").classList.add("hidden");
+    function showMainChat() {
         document.querySelector('header').classList.remove('hidden');
         document.getElementById('chat-box').classList.remove('hidden');
         document.querySelector('footer').classList.remove('hidden');
-        setupChat("🔒 " + name, "private_" + name);
     }
 
     function setupChat(displayName, dbPath) {
         document.getElementById("room-display").innerText = displayName;
         messagesRef = firebase.database().ref("messages/" + dbPath);
-
-        messagesRef.limitToLast(100).on("child_added", (snapshot) => {
+        messagesRef.limitToLast(50).on("child_added", (snapshot) => {
             const data = snapshot.val();
             const chatBox = document.getElementById("chat-box");
             const isMe = data.user === currentUsername;
             const msgDiv = document.createElement("div");
             msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
-            
-            const userSpan = `<span class="msg-user" style="color:${stringToColor(data.user)}">${data.user}</span>`;
-            const timeSpan = `<span class="msg-time">${data.time || ''}</span>`;
-            
-            if(data.type === 'image') {
-                msgDiv.innerHTML = `${userSpan}<img src="${data.url}" class="msg-img">${timeSpan}`;
-            } else {
-                const textNode = document.createElement('span');
-                textNode.textContent = data.text;
-                msgDiv.innerHTML = userSpan;
-                msgDiv.appendChild(textNode);
-                msgDiv.innerHTML += timeSpan;
-            }
+            msgDiv.innerHTML = `<small class="msg-user" style="color:var(--accent)">${data.user}</small>${data.text}<br><small class="msg-time">${data.time || ''}</small>`;
             chatBox.appendChild(msgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         });
@@ -264,31 +225,15 @@
 
     function sendMessage() {
         const input = document.getElementById("msgInput");
-        const text = input.value.trim();
-        if (text !== "" && messagesRef) {
+        if (input.value.trim() !== "" && messagesRef) {
             const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            messagesRef.push({ user: currentUsername, text: text, type: 'text', time: now });
+            messagesRef.push({ user: currentUsername, text: input.value, type: 'text', time: now });
             input.value = "";
-            input.blur();
+            input.blur(); // إخفاء لوحة المفاتيح
         }
     }
 
-    document.getElementById("chat-box").addEventListener("touchstart", function() {
-        document.getElementById("msgInput").blur();
-    });
-
-    function sendImageUrl() {
-        const url = prompt("الصق رابط الصورة:");
-        if(url && messagesRef) {
-            const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            messagesRef.push({ user: currentUsername, url: url, type: 'image', time: now });
-            document.getElementById("msgInput").blur();
-        }
-    }
-
-    document.getElementById("msgInput").addEventListener("keypress", (e) => { 
-        if (e.key === "Enter") sendMessage(); 
-    });
+    document.getElementById("msgInput").addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 </script>
 </body>
 </html>
