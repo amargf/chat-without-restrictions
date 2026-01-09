@@ -3,41 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat-without-restrictions</title>
+    <title>Chat without restrictions</title>
     <style>
-        /* نفس التصميم القديم الذي كان يظهر في صورك */
-        body { font-family: Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        h1 { color: #075e54; margin-bottom: 20px; }
-        .room-choice { border: 1px solid #ddd; padding: 20px; border-radius: 8px; background: #fafafa; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background-color: #075e54; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        button:hover { background-color: #054c44; }
+        /* الكود الأول: بسيط وسريع */
+        body { font-family: Arial, sans-serif; background-color: #e5ddd5; margin: 0; }
+        .chat-container { display: flex; flex-direction: column; height: 100vh; }
+        .header { background-color: #075e54; color: white; padding: 15px; text-align: center; font-weight: bold; }
+        .room-area { background: white; padding: 10px; border-bottom: 1px solid #ccc; text-align: center; }
+        .messages { flex: 1; overflow-y: auto; padding: 20px; }
+        .message { background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px; max-width: 70%; }
+        .input-area { display: flex; padding: 10px; background: #f0f0f0; }
+        input { flex: 1; padding: 10px; border: none; border-radius: 20px; outline: none; }
+        button { background: #075e54; color: white; border: none; padding: 10px 20px; border-radius: 20px; margin-right: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
+    <div class="chat-container">
+        <div class="header">Chat without restrictions</div>
+        
+        <div class="room-area">
+            <input type="text" id="roomInput" placeholder="أدخل اسم الغرفة الخاصة..." style="width: 70%; border: 1px solid #ccc;">
+            <button onclick="joinRoom()">دخول</button>
+        </div>
 
-<div class="container">
-    <h1>Chat without restrictions</h1>
-    
-    <div class="room-choice">
-        <h3>الغرفة الخاصة</h3>
-        <p>أدخل اسم الغرفة السرية المتفق عليها:</p>
-        <input type="text" id="privateRoom" placeholder="مثال: secret77">
-        <button onclick="goToPrivate()">دخول الغرفة الخاصة</button>
+        <div class="messages" id="chatBox">
+            <div class="message">مرحباً! قم بتحديد اسم غرفة خاصة لتبدأ المحادثة.</div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="اكتب رسالتك هنا...">
+            <button onclick="sendMessage()">إرسال</button>
+        </div>
     </div>
-</div>
 
-<script>
-    function goToPrivate() {
-        var room = document.getElementById('privateRoom').value;
-        if(room.trim() !== "") {
-            alert("جاري الانتقال للغرفة الخاصة: " + room);
-        } else {
-            alert("يرجى كتابة اسم الغرفة أولاً");
+    <script>
+        let currentRoom = "";
+        function joinRoom() {
+            const room = document.getElementById('roomInput').value.trim();
+            if (room !== "") {
+                currentRoom = room;
+                document.getElementById('chatBox').innerHTML = `<div class="message">دخلت الغرفة: <b>${currentRoom}</b></div>`;
+            }
         }
-    }
-</script>
 
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            if (input.value.trim() !== "" && currentRoom !== "") {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'message';
+                msgDiv.style.alignSelf = 'flex-start';
+                msgDiv.style.backgroundColor = '#dcf8c6';
+                msgDiv.textContent = input.value;
+                chatBox.appendChild(msgDiv);
+                input.value = "";
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } else if (currentRoom === "") {
+                alert("يجب دخول غرفة أولاً");
+            }
+        }
+    </script>
 </body>
 </html>
