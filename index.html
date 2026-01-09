@@ -3,104 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>واتساب العرب - نسخة الفقاعة</title>
+    <title>واتساب العرب - نسخة المتصفح</title>
     <style>
+        /* إعدادات الصفحة الأساسية */
         html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: #0b141a; display: flex; flex-direction: column; color: white; }
-        
-        /* الهيدر والدردشة */
-        header { background-color: #202c33; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b4a54; }
-        #chat-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-color: rgba(11, 20, 26, 0.95); background-blend-mode: overlay; }
-        
-        .message { max-width: 75%; padding: 8px 12px; border-radius: 12px; font-size: 15px; position: relative; }
-        .sent { align-self: flex-end; background-color: #005c4b; }
-        .received { align-self: flex-start; background-color: #202c33; }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #0b141a; 
+            display: flex; 
+            flex-direction: column; 
+            color: #e9edef; 
+        }
 
-        footer { background: #202c33; padding: 10px; display: flex; gap: 8px; align-items: center; }
-        #msgInput { flex: 1; padding: 10px 15px; border-radius: 20px; border: none; background: #2a3942; color: white; outline: none; }
-        .send-btn { background: #00a884; border: none; border-radius: 50%; width: 40px; height: 40px; color: white; cursor: pointer; }
+        /* رأس الصفحة - Header */
+        header { 
+            background-color: #202c33; 
+            padding: 12px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid rgba(134, 150, 160, 0.15); 
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
 
-        /* --- تصميم الفقاعة العائمة (مثل ماسنجر) --- */
-        #floating-bubble {
-            position: fixed;
-            bottom: 80px;
-            left: 20px;
-            width: 60px;
-            height: 60px;
-            background: #00a884;
-            border-radius: 50%;
+        .exit-btn {
+            background: #ea0038; 
+            border: none; 
+            color: white; 
+            border-radius: 8px; 
+            padding: 6px 15px; 
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        .exit-btn:hover { opacity: 0.8; }
+
+        #room-display { font-weight: 500; font-size: 1.1rem; color: #d1d7db; }
+
+        /* صندوق الدردشة - Chat Box */
+        #chat-box { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); 
+            background-color: rgba(11, 20, 26, 0.95); 
+            background-blend-mode: overlay; 
+        }
+
+        /* الفقاعات - Message Bubbles */
+        .message { 
+            max-width: 80%; 
+            padding: 8px 12px; 
+            border-radius: 12px; 
+            font-size: 15px; 
+            line-height: 1.5;
+            position: relative;
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+        }
+        .sent { 
+            align-self: flex-end; 
+            background-color: #005c4b; 
+            border-top-right-radius: 2px;
+            color: #e9edef;
+        }
+        .received { 
+            align-self: flex-start; 
+            background-color: #202c33; 
+            border-top-left-radius: 2px;
+            color: #e9edef;
+        }
+        .msg-user { font-size: 12px; font-weight: bold; margin-bottom: 4px; display: block; }
+        .msg-img { max-width: 100%; border-radius: 8px; margin-top: 5px; cursor: zoom-in; }
+
+        /* تذييل الصفحة - Footer */
+        footer { 
+            background: #202c33; 
+            padding: 10px 15px; 
+            display: flex; 
+            gap: 10px; 
+            align-items: center; 
+            flex-shrink: 0;
+            border-top: 1px solid rgba(134, 150, 160, 0.1);
+        }
+
+        #msgInput { 
+            flex: 1; 
+            padding: 10px 15px; 
+            border-radius: 24px; 
+            border: none; 
+            background: #2a3942; 
+            color: #d1d7db; 
+            outline: none; 
+            font-size: 15px; 
+        }
+
+        .icon-btn { 
+            background: none; 
+            border: none; 
+            font-size: 24px; 
+            cursor: pointer; 
+            color: #8696a0; 
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            cursor: pointer;
-            z-index: 9999;
-            transition: transform 0.3s;
+            transition: color 0.2s;
         }
-        #floating-bubble:active { transform: scale(0.9); }
+        .icon-btn:hover { color: #d1d7db; }
 
-        /* قائمة الفقاعة */
-        #bubble-menu {
-            position: fixed;
-            bottom: 150px;
-            left: 20px;
-            background: #222e35;
-            border-radius: 15px;
-            width: 200px;
-            display: none;
-            flex-direction: column;
-            padding: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            z-index: 10000;
-            border: 1px solid #3b4a54;
+        .send-btn { 
+            background: #00a884; 
+            border: none; 
+            border-radius: 50%; 
+            width: 42px; 
+            height: 42px; 
+            color: #0b141a; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 18px;
+            transition: transform 0.1s;
         }
-        .menu-item {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #3b4a54;
-            cursor: pointer;
-            color: #e9edef;
-            font-weight: bold;
-        }
-        .menu-item:last-child { border-bottom: none; }
-        .menu-item:hover { background: #2a3942; }
+        .send-btn:active { transform: scale(0.9); }
 
-        /* الواجهات الأصلية */
-        #overlay { position: fixed; inset: 0; background: #0b141a; display: flex; align-items: center; justify-content: center; z-index: 11000; padding: 20px; }
-        .modal-card { background: #222e35; padding: 30px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; border: 1px solid #3b4a54; }
-        .custom-btn { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold; background: #00a884; color: white; }
-        .modern-input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #3b4a54; background: #2a3942; color: white; text-align: center; }
+        /* واجهة الاختيار - Overlay Modals */
+        #overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: #0b141a; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1000; 
+            padding: 20px; 
+        }
+        .modal-card { 
+            background: #222e35; 
+            padding: 35px 25px; 
+            border-radius: 24px; 
+            width: 100%; 
+            max-width: 360px; 
+            text-align: center; 
+            border: 1px solid rgba(134, 150, 160, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal-card h2 { margin-top: 0; color: #00a884; font-size: 1.5rem; }
+        
+        .custom-btn { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 15px; 
+            border: none; 
+            border-radius: 24px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-green { background-color: #00a884; color: #111b21; }
+        .btn-green:hover { background-color: #06cf9c; box-shadow: 0 4px 12px rgba(0,168,132,0.3); }
+
+        .modern-input { 
+            width: 100%; 
+            box-sizing: border-box;
+            padding: 14px; 
+            margin: 10px 0; 
+            border-radius: 12px; 
+            border: 1px solid #3b4a54; 
+            background: #2a3942; 
+            color: white; 
+            text-align: center; 
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .modern-input:focus { border-color: #00a884; }
+
         .hidden { display: none !important; }
+
+        /* تحسين شريط التمرير */
+        #chat-box::-webkit-scrollbar { width: 6px; }
+        #chat-box::-webkit-scrollbar-thumb { background: rgba(134, 150, 160, 0.2); }
     </style>
 </head>
 <body>
 
-<div id="floating-bubble" onclick="toggleBubbleMenu()">🎮</div>
-
-<div id="bubble-menu">
-    <div class="menu-item" onclick="launchGame()">🕹️ فتح اللعبة</div>
-    <div class="menu-item" onclick="location.reload()">🔄 إعادة تعيين</div>
-    <div class="menu-item" style="color: #ea0038;" onclick="toggleBubbleMenu()">إغلاق ✖</div>
-</div>
-
 <div id="overlay">
     <div id="step-name" class="modal-card">
         <h2>أهلاً بك</h2>
-        <input type="text" id="username-input" class="modern-input" placeholder="اسمك المستعار">
-        <button class="custom-btn" onclick="saveUsername()">متابعة</button>
+        <p style="color: #8696a0; margin-bottom: 20px;">يرجى اختيار اسم مستعار للبدء</p>
+        <input type="text" id="username-input" class="modern-input" placeholder="اكتب اسمك هنا...">
+        <button class="custom-btn btn-green" onclick="saveUsername()">متابعة</button>
+    </div>
+
+    <div id="step-choice" class="modal-card hidden">
+        <h2>الدخول للدردشة</h2>
+        <p style="color: #8696a0; font-size: 14px; margin-bottom: 20px;">يجب إنشاء أو دخول غرفة خاصة مشفرة</p>
+        <button class="custom-btn btn-green" onclick="showPrivateForm()">دخول غرفة خاصة</button>
     </div>
 
     <div id="step-private" class="modal-card hidden">
         <h2>بيانات الغرفة</h2>
         <input type="text" id="room-name-input" class="modern-input" placeholder="اسم الغرفة">
         <input type="password" id="room-pass-input" class="modern-input" placeholder="كلمة السر">
-        <button class="custom-btn" onclick="joinPrivate()">دخول</button>
+        <button class="custom-btn btn-green" onclick="joinPrivate()">تأكيد الدخول</button>
     </div>
 </div>
 
 <header>
-    <button onclick="location.reload()" style="background:#ea0038; border:none; color:white; border-radius:10px; padding:5px 12px; cursor:pointer;">خروج</button>
+    <button class="exit-btn" onclick="location.reload()">خروج</button>
     <div id="room-display">الرئيسية</div>
     <div style="width:40px"></div>
 </header>
@@ -108,7 +221,7 @@
 <div id="chat-box"></div>
 
 <footer>
-    <button style="background:none; border:none; font-size:22px; color:#8696a0;" onclick="sendImageUrl()">🖼️</button>
+    <button class="icon-btn" onclick="sendImageUrl()" title="إرسال صورة">🖼️</button>
     <input type="text" id="msgInput" placeholder="اكتب رسالة...">
     <button class="send-btn" onclick="sendMessage()">➤</button>
 </footer>
@@ -125,7 +238,7 @@
 
     if(currentUsername) {
         document.getElementById('step-name').classList.add('hidden');
-        document.getElementById('step-private').classList.remove('hidden');
+        document.getElementById('step-choice').classList.remove('hidden');
     }
 
     function saveUsername() {
@@ -134,26 +247,22 @@
             currentUsername = val;
             localStorage.setItem("chat_user", val);
             document.getElementById('step-name').classList.add('hidden');
-            document.getElementById('step-private').classList.remove('hidden');
+            document.getElementById('step-choice').classList.remove('hidden');
         }
     }
 
-    // وظائف الفقاعة
-    function toggleBubbleMenu() {
-        const menu = document.getElementById('bubble-menu');
-        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
-    }
-
-    function launchGame() {
-        toggleBubbleMenu();
-        const gameUrl = "http://www.appcreator24.com/intra/app_sec_game_preview.php?idioma=en&idsesion=pwy4fd5h2gat8c6ibqsmle097joknr3zu1xv&idg=1&ckp=8rwmciks4a617d2v9yxzeltfnpjb5h0oq3gu@1633713@0";
-        window.open(gameUrl, 'GameWindow', 'width=500,height=700');
+    function showPrivateForm() {
+        document.getElementById('step-choice').classList.add('hidden');
+        document.getElementById('step-private').classList.remove('hidden');
     }
 
     function joinPrivate() {
         let roomName = document.getElementById('room-name-input').value.trim();
         let roomPass = document.getElementById('room-pass-input').value.trim();
-        if(!roomName || !roomPass) return;
+        if(!roomName || !roomPass) {
+            alert("يرجى إدخال اسم الغرفة وكلمة السر");
+            return;
+        }
 
         const roomRef = firebase.database().ref("room_settings/" + roomName);
         roomRef.once('value').then((snapshot) => {
@@ -173,14 +282,24 @@
     function setupChat(displayName, dbPath) {
         document.getElementById("room-display").innerText = displayName;
         messagesRef = firebase.database().ref("messages/" + dbPath);
+
         messagesRef.on("child_added", (snapshot) => {
             const data = snapshot.val();
             const chatBox = document.getElementById("chat-box");
             const msgDiv = document.createElement("div");
             const isMe = data.user === currentUsername;
             msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
-            msgDiv.innerHTML = `<small style="color:${isMe ? '#8696a0' : '#ffd700'}">${data.user}</small><br>${data.text || ''}`;
-            if(data.type === 'image') msgDiv.innerHTML += `<img src="${data.url}" style="max-width:100%; border-radius:8px;">`;
+            
+            let nameColor = isMe ? '#86e49d' : '#ffd700';
+            let content = `<small class="msg-user" style="color:${nameColor}">${data.user}</small>`;
+            
+            if(data.type === 'image') {
+                content += `<img src="${data.url}" class="msg-img">`;
+            } else {
+                content += `<span>${data.text}</span>`;
+            }
+
+            msgDiv.innerHTML = content;
             chatBox.appendChild(msgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         });
@@ -195,11 +314,16 @@
     }
 
     function sendImageUrl() {
-        const url = prompt("الصق رابط الصورة:");
-        if(url && messagesRef) messagesRef.push({ user: currentUsername, url: url, type: 'image' });
+        const url = prompt("الصق رابط الصورة هنا:");
+        if(url && messagesRef) {
+            messagesRef.push({ user: currentUsername, url: url, type: 'image' });
+        }
     }
 
-    document.getElementById("msgInput").addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
+    document.getElementById("msgInput").addEventListener("keypress", (e) => { 
+        if (e.key === "Enter") sendMessage(); 
+    });
 </script>
+
 </body>
 </html>
