@@ -5,42 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat-without-restrictions</title>
     <style>
-        /* سأترك لك هنا نفس تنسيقات واجهتك القديمة بالضبط */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #d1d1d1; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        h2 { text-align: center; color: #333; }
-        .room-box { border: 2px solid #075e54; padding: 15px; border-radius: 10px; margin-top: 20px; background: #f9f9f9; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #075e54; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        /* نفس التصميم القديم الذي كان يظهر في صورك */
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h1 { color: #075e54; margin-bottom: 20px; }
+        .room-choice { border: 1px solid #ddd; padding: 20px; border-radius: 8px; background: #fafafa; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #075e54; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
         button:hover { background-color: #054c44; }
-        .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #777; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Chat-without-restrictions</h2>
+    <h1>Chat without restrictions</h1>
     
-    <div class="room-box">
-        <h3>الدخول إلى غرفة خاصة</h3>
-        <p>أدخل اسم الغرفة التي اتفقت عليها مع صديقك:</p>
-        <input type="text" id="privateRoomName" placeholder="مثال: my-secret-room-123">
-        <button onclick="enterPrivateRoom()">دخول الغرفة الخاصة</button>
-    </div>
-
-    <div class="footer">
-        مشفر وآمن تماماً
+    <div class="room-choice">
+        <h3>الغرفة الخاصة</h3>
+        <p>أدخل اسم الغرفة السرية المتفق عليها:</p>
+        <input type="text" id="privateRoom" placeholder="مثال: secret77">
+        <button onclick="goToPrivate()">دخول الغرفة الخاصة</button>
     </div>
 </div>
 
 <script>
-    function enterPrivateRoom() {
-        var room = document.getElementById('privateRoomName').value;
+    function goToPrivate() {
+        var room = document.getElementById('privateRoom').value;
         if(room.trim() !== "") {
-            alert("جاري الدخول إلى الغرفة الخاصة: " + room);
-            // هنا تضع رابط صفحة الدردشة الفعلية أو الكود الخاص بها
+            alert("جاري الانتقال للغرفة الخاصة: " + room);
         } else {
-            alert("يرجى إدخال اسم الغرفة");
+            alert("يرجى كتابة اسم الغرفة أولاً");
         }
     }
 </script>
