@@ -31,6 +31,12 @@
         .btn-green { background-color: #00a884; color: white; }
         .hidden { display: none !important; }
         .modern-input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #3b4a54; background: #2a3942; color: white; text-align: center; }
+
+        /* تنسيق قائمة الألعاب */
+        .games-list { margin-top: 15px; padding: 10px; background: #111b21; border-radius: 10px; border: 1px solid #3b4a54; text-align: right; }
+        .games-list h3 { font-size: 16px; margin-top: 0; color: #00a884; border-bottom: 1px solid #3b4a54; padding-bottom: 5px; text-align: center; }
+        .game-item { padding: 8px; color: #8696a0; font-size: 14px; border-bottom: 1px solid #202c33; }
+        .game-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
@@ -46,6 +52,13 @@
         <h2>الدخول للدردشة</h2>
         <p style="color: #8696a0; font-size: 14px;">يجب إنشاء أو دخول غرفة خاصة مشفرة</p>
         <button class="custom-btn btn-green" onclick="showPrivateForm()">دخول غرفة خاصة</button>
+        
+        <div class="games-list">
+            <h3>🎮 قائمة الألعاب</h3>
+            <div id="games-container">
+                <div class="game-item">قريباً... (يمكنك إضافة ألعابك هنا)</div>
+            </div>
+        </div>
     </div>
 
     <div id="step-private" class="modal-card hidden">
@@ -53,6 +66,7 @@
         <input type="text" id="room-name-input" class="modern-input" placeholder="اسم الغرفة">
         <input type="password" id="room-pass-input" class="modern-input" placeholder="كلمة السر">
         <button class="custom-btn btn-green" onclick="joinPrivate()">دخول</button>
+        <button class="custom-btn" style="background:#202c33; color:white;" onclick="backToChoice()">عودة</button>
     </div>
 </div>
 
@@ -100,7 +114,10 @@
         document.getElementById('step-private').classList.remove('hidden');
     }
 
-    // تم حذف وظيفة joinPublic لتعطيل الشات العام
+    function backToChoice() {
+        document.getElementById('step-private').classList.add('hidden');
+        document.getElementById('step-choice').classList.remove('hidden');
+    }
 
     function joinPrivate() {
         let roomName = document.getElementById('room-name-input').value.trim();
