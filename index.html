@@ -6,7 +6,6 @@
     
     <title>amargf_chat</title>
     <meta property="og:title" content="amargf_chat">
-    <meta name="description" content="منصة amargf للدردشة">
 
     <style>
         :root {
@@ -35,16 +34,7 @@
             background-color: rgba(11, 20, 26, 0.95);
         }
         
-        .message { 
-            max-width: 80%; 
-            padding: 8px 12px; 
-            border-radius: 8px; 
-            font-size: 15px; 
-            position: relative; 
-            box-shadow: 0 1px 1px rgba(0,0,0,0.2);
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
+        .message { max-width: 80%; padding: 8px 12px; border-radius: 8px; font-size: 15px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.2); word-wrap: break-word; }
         .sent { align-self: flex-end; background-color: var(--sent-msg); border-top-left-radius: 0; }
         .received { align-self: flex-start; background-color: var(--received-msg); border-top-right-radius: 0; }
         
@@ -54,75 +44,77 @@
 
         footer { background: var(--bg-header); padding: 10px; display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
         #msgInput { flex: 1; padding: 12px 15px; border-radius: 25px; border: none; background: #2a3942; color: white; outline: none; font-size: 16px; }
-        
-        .send-btn { background: var(--accent); border: none; border-radius: 50%; width: 45px; height: 45px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 20px; }
-        .send-btn:active { transform: scale(0.9); }
+        .send-btn { background: var(--accent); border: none; border-radius: 50%; width: 45px; height: 45px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; }
 
-        /* الواجهات المنبثقة */
-        #overlay { position: fixed; inset: 0; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-        .modal-card { background: #222e35; padding: 30px; border-radius: 15px; width: 100%; max-width: 350px; text-align: center; border: 1px solid #3b4a54; }
-        .custom-btn { width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-green { background-color: var(--accent); color: #0b141a; }
-        .modern-input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #3b4a54; background: #2a3942; color: white; box-sizing: border-box; text-align: center; }
-        .hidden { display: none !important; }
-
-        /* Splash Screen Styles */
+        /* Splash Screen - التعديل هنا للتوسيط الكامل */
         #splash-screen {
             position: fixed;
             inset: 0;
-            background: linear-gradient(135deg, #0b141a, #1a2a3a); /* تدرج لوني جميل */
+            background: #0b141a;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            z-index: 1001; /* أعلى من الـ overlay */
+            justify-content: center; /* توسيط عمودي */
+            text-align: center; /* توسيط أفقي للنصوص */
+            z-index: 2000;
             color: white;
-            animation: fadeIn 1s ease-out; /* تأثير ظهور خفيف */
+            padding: 20px;
         }
-        #splash-screen .logo-icon {
-            font-size: 80px; /* حجم الأيقونة */
-            color: var(--accent);
+
+        .logo-box {
             margin-bottom: 20px;
-            animation: bounce 2s infinite ease-in-out; /* تأثير حركة لطيف */
         }
-        #splash-screen h1 {
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+
+        .logo-icon {
+            font-size: 100px;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 10px;
         }
-        #splash-screen .start-button {
+
+        .splash-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+            color: white;
+        }
+
+        .splash-subtitle {
+            font-size: 18px;
+            color: var(--accent);
+            margin: 5px 0 30px 0;
+            letter-spacing: 1px;
+        }
+
+        .start-button {
             background-color: var(--accent);
             color: #0b141a;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1.2em;
+            padding: 14px 50px;
+            border-radius: 30px;
+            font-size: 18px;
             font-weight: bold;
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 168, 132, 0.4);
-            transition: all 0.3s ease;
-        }
-        #splash-screen .start-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 168, 132, 0.6);
+            transition: 0.3s;
         }
 
-        /* Keyframe Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
+        /* Overlay */
+        #overlay { position: fixed; inset: 0; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .modal-card { background: #222e35; padding: 30px; border-radius: 15px; width: 100%; max-width: 350px; text-align: center; border: 1px solid #3b4a54; }
+        .custom-btn { width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        .btn-green { background-color: var(--accent); color: #0b141a; }
+        .modern-input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #3b4a54; background: #2a3942; color: white; text-align: center; box-sizing: border-box; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <div id="splash-screen">
-    <div class="logo-icon">💬</div> <h1>مرحباً بك في amargf_chat</h1>
+    <div class="logo-box">
+        <span class="logo-icon">💬</span>
+        <h1 class="splash-title">مرحباً بك في</h1>
+        <p class="splash-subtitle">amargf_chat</p>
+    </div>
     <button class="start-button" onclick="startChat()">بدء الدردشة</button>
 </div>
 
@@ -149,12 +141,16 @@
     </div>
 </div>
 
-<header class="hidden"> <button onclick="location.reload()" style="background:#ea0038; border:none; color:white; border-radius:8px; padding:6px 12px; cursor:pointer; font-weight:bold;">خروج</button>
+<header class="hidden">
+    <button onclick="location.reload()" style="background:#ea0038; border:none; color:white; border-radius:8px; padding:6px 12px; cursor:pointer; font-weight:bold;">خروج</button>
     <div id="room-display" style="font-weight:bold">amargf - الرئيسية</div>
     <div id="user-display" style="font-size:11px; color:var(--accent)"></div>
 </header>
 
-<div id="chat-box" class="hidden"></div> <footer class="hidden"> <button class="icon-btn" onclick="sendImageUrl()" style="background:none; border:none; font-size:24px; cursor:pointer;">🖼️</button>
+<div id="chat-box" class="hidden"></div>
+
+<footer class="hidden">
+    <button class="icon-btn" onclick="sendImageUrl()" style="background:none; border:none; font-size:24px; cursor:pointer;">🖼️</button>
     <input type="text" id="msgInput" placeholder="اكتب رسالة..." autocomplete="off">
     <button class="send-btn" onclick="sendMessage()">➤</button>
 </footer>
@@ -175,7 +171,6 @@
         return `hsl(${hash % 360}, 75%, 75%)`;
     }
 
-    // دالة بدء الدردشة بعد شاشة الترحيب
     function startChat() {
         document.getElementById('splash-screen').classList.add('hidden');
         document.getElementById('overlay').classList.remove('hidden');
@@ -203,7 +198,6 @@
 
     function joinPublic() {
         document.getElementById("overlay").classList.add("hidden");
-        // إظهار عناصر الشات
         document.querySelector('header').classList.remove('hidden');
         document.getElementById('chat-box').classList.remove('hidden');
         document.querySelector('footer').classList.remove('hidden');
@@ -231,7 +225,6 @@
 
     function startPrivate(name) {
         document.getElementById("overlay").classList.add("hidden");
-        // إظهار عناصر الشات
         document.querySelector('header').classList.remove('hidden');
         document.getElementById('chat-box').classList.remove('hidden');
         document.querySelector('footer').classList.remove('hidden');
@@ -246,7 +239,6 @@
             const data = snapshot.val();
             const chatBox = document.getElementById("chat-box");
             const isMe = data.user === currentUsername;
-            
             const msgDiv = document.createElement("div");
             msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
             
@@ -256,13 +248,12 @@
             if(data.type === 'image') {
                 msgDiv.innerHTML = `${userSpan}<img src="${data.url}" class="msg-img">${timeSpan}`;
             } else {
-                const textContent = document.createElement('span');
-                textContent.textContent = data.text;
+                const textNode = document.createElement('span');
+                textNode.textContent = data.text;
                 msgDiv.innerHTML = userSpan;
-                msgDiv.appendChild(textContent);
+                msgDiv.appendChild(textNode);
                 msgDiv.innerHTML += timeSpan;
             }
-
             chatBox.appendChild(msgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         });
