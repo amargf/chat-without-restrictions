@@ -6,25 +6,24 @@
     <title>واتساب العرب - احترافي</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b141a; margin: 0; display: flex; flex-direction: column; height: 100vh; color: white; overflow: hidden; }
-        header { background-color: #202c33; padding: 15px; text-align: center; border-bottom: 1px solid #3b4a54; z-index: 10; }
-        #room-display { font-size: 14px; color: #00a884; margin-top: 5px; font-weight: bold; }
+        header { background-color: #202c33; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b4a54; z-index: 10; }
+        #room-display { font-size: 14px; color: #00a884; font-weight: bold; }
+        .exit-btn { background: #ea0038; color: white; border: none; padding: 5px 12px; border-radius: 15px; cursor: pointer; font-size: 12px; font-weight: bold; }
         
         /* شاشة البداية الاحترافية */
         #overlay { position: fixed; inset: 0; background: #0b141a; display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
         .modal-card { background: #222e35; padding: 30px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #3b4a54; }
-        h2 { margin-top: 0; color: #e9edef; }
         
         .custom-btn { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-green { background-color: #00a884; color: white; }
         .btn-outline { background-color: transparent; color: #00a884; border: 2px solid #00a884; }
         
         .hidden { display: none !important; }
-        
         input.modern-input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #3b4a54; background: #2a3942; color: white; outline: none; text-align: center; }
 
         /* منطقة الدردشة */
         #chat-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; background-color: rgba(11, 20, 26, 0.9); }
-        .message { max-width: 75%; padding: 8px 12px; border-radius: 10px; font-size: 15px; word-wrap: break-word; line-height: 1.4; }
+        .message { max-width: 75%; padding: 8px 12px; border-radius: 10px; font-size: 15px; word-wrap: break-word; }
         .sent { align-self: flex-end; background-color: #005c4b; border-bottom-right-radius: 2px; }
         .received { align-self: flex-start; background-color: #202c33; border-bottom-left-radius: 2px; }
         
@@ -37,14 +36,12 @@
 <div id="overlay">
     <div id="step-name" class="modal-card">
         <h2>أهلاً بك</h2>
-        <p>الرجاء إدخال اسمك المستعار</p>
-        <input type="text" id="username-input" class="modern-input" placeholder="مثال: القناص">
+        <input type="text" id="username-input" class="modern-input" placeholder="اسمك المستعار">
         <button class="custom-btn btn-green" onclick="saveUsername()">دخول</button>
     </div>
 
     <div id="step-choice" class="modal-card hidden">
         <h2>واتساب العرب</h2>
-        <p>اختر نوع الدردشة</p>
         <button class="custom-btn btn-green" onclick="joinPublic()">الشات العام</button>
         <button class="custom-btn btn-outline" onclick="showPrivateForm()">غرفة خاصة</button>
     </div>
@@ -53,14 +50,15 @@
         <h2>غرفة خاصة</h2>
         <input type="text" id="room-name-input" class="modern-input" placeholder="اسم الغرفة">
         <input type="password" id="room-pass-input" class="modern-input" placeholder="كلمة السر">
-        <button class="custom-btn btn-green" onclick="joinPrivate()">تأكيد الدخول</button>
-        <button class="custom-btn btn-outline" style="border:none; color:#8696a0" onclick="backToChoice()">رجوع</button>
+        <button class="custom-btn btn-green" onclick="joinPrivate()">دخول</button>
+        <button class="custom-btn" style="background:none; color:#8696a0" onclick="backToChoice()">إلغاء</button>
     </div>
 </div>
 
 <header>
-    <div>واتساب العرب</div>
+    <button class="exit-btn" onclick="logout()">خروج</button>
     <div id="room-display">الرئيسية</div>
+    <div style="width:40px"></div> 
 </header>
 
 <div id="chat-box"></div>
@@ -74,14 +72,12 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-    const firebaseConfig = {
-        databaseURL: "https://khadimalarab-default-rtdb.firebaseio.com/"
-    };
+    const firebaseConfig = { databaseURL: "https://khadimalarab-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
 
     let currentUsername = localStorage.getItem("chat_user");
-    
-    // فحص إذا كان الاسم موجوداً مسبقاً
+    let messagesRef = null;
+
     if(currentUsername) {
         document.getElementById('step-name').classList.add('hidden');
         document.getElementById('step-choice').classList.remove('hidden');
@@ -95,6 +91,14 @@
             document.getElementById('step-name').classList.add('hidden');
             document.getElementById('step-choice').classList.remove('hidden');
         }
+    }
+
+    function logout() {
+        if(messagesRef) messagesRef.off(); // إيقاف الاستماع للرسائل القديمة
+        document.getElementById("chat-box").innerHTML = ""; // مسح الشاشة
+        document.getElementById("overlay").classList.remove("hidden");
+        document.getElementById('step-choice').classList.remove('hidden');
+        document.getElementById('step-private').classList.add('hidden');
     }
 
     function joinPublic() {
@@ -115,21 +119,18 @@
     function joinPrivate() {
         let roomName = document.getElementById('room-name-input').value.trim() || "عام";
         let roomPass = document.getElementById('room-pass-input').value.trim();
-        
-        if(!roomPass) { alert("يرجى إدخال كلمة سر"); return; }
+        if(!roomPass) return;
 
         const roomRef = firebase.database().ref("room_settings/" + roomName);
         roomRef.once('value').then((snapshot) => {
             const data = snapshot.val();
             document.getElementById("overlay").classList.add("hidden");
-            
             if (!data) {
                 roomRef.set({ password: roomPass });
                 setupChat("غرفة: " + roomName, "private_" + roomName);
             } else if (data.password === roomPass) {
                 setupChat("غرفة: " + roomName, "private_" + roomName);
             } else {
-                // التمويه الذكي
                 setupChat("غرفة: " + roomName, "fake_" + roomName + "_" + roomPass);
             }
         });
@@ -137,7 +138,7 @@
 
     function setupChat(displayName, dbPath) {
         document.getElementById("room-display").innerText = displayName;
-        const messagesRef = firebase.database().ref("messages/" + dbPath);
+        messagesRef = firebase.database().ref("messages/" + dbPath);
 
         window.sendMessage = function() {
             const input = document.getElementById("msgInput");
@@ -152,14 +153,12 @@
             const chatBox = document.getElementById("chat-box");
             const msgDiv = document.createElement("div");
             const isMe = data.user === currentUsername;
-            
             msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
             msgDiv.innerHTML = `<small style="color:${isMe ? '#8696a0' : '#ffd700'}">${data.user}</small><br>${data.text}`;
             chatBox.appendChild(msgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     }
-
     document.getElementById("msgInput").addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 </script>
 </body>
