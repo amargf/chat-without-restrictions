@@ -3,126 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Messenger Pro - Fixed UI</title>
+    <title>ماسنجر برو - الإصدار المظلم الثابت</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; transition: background 0.3s ease; }
         
-        /* جعل الجسم يأخذ كامل الشاشة ويمنع السحب الخارجي */
+        /* ضبط الهيكل الأساسي لضمان الثبات */
         html, body { 
             height: 100%; 
-            width: 100%;
-            overflow: hidden; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden; /* يمنع الصفحة كاملة من التحرك */
             background-color: #000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        body { display: flex; flex-direction: column; }
+        body { 
+            display: flex; 
+            flex-direction: column; /* ترتيب العناصر عمودياً */
+        }
 
-        /* الهيدر ثابت في الأعلى */
+        /* الهيدر العلوي */
         header { 
             height: 60px;
-            background: rgba(20, 20, 20, 0.95);
+            background: rgba(15, 15, 15, 0.98);
             backdrop-filter: blur(10px);
-            padding: 0 16px; 
+            padding: 0 15px; 
             display: flex; 
             align-items: center; 
+            justify-content: space-between;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 100;
+            flex-shrink: 0; /* يمنع الهيدر من الانكماش */
         }
-        .header-info { flex: 1; text-align: center; color: white; }
-        .header-info h1 { font-size: 16px; }
+        .header-info { text-align: center; flex: 1; }
+        .header-info h1 { margin: 0; font-size: 17px; color: #fff; font-weight: bold; }
+        .online-status { font-size: 11px; color: #31a24c; }
 
-        /* منطقة الرسائل: تأخذ المساحة المتبقية وتسمح بالتمرير */
+        /* منطقة المحادثة - هي الوحيدة التي تتحرك */
         #chat-box { 
-            flex: 1; 
+            flex: 1; /* تأخذ كل المساحة المتاحة بين الهيدر والفوتر */
             overflow-y: auto; 
             padding: 15px; 
             display: flex; 
             flex-direction: column; 
-            background: #000;
+            background: radial-gradient(circle at top, #1a1a1a 0%, #000 100%);
             gap: 8px;
-            /* منع التصاق الرسائل بالحواف */
-            padding-bottom: 20px; 
+            padding-bottom: 20px;
         }
 
-        /* شريط الإدخال: ثابت في الأسفل تماماً */
+        /* شريط الكتابة - ثابت في الأسفل */
         footer { 
-            height: auto;
-            min-height: 65px;
             background: #000; 
-            padding: 10px 15px; 
+            padding: 12px 15px; 
             display: flex; 
             align-items: center; 
             gap: 12px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            /* ضمان الثبات في الأسفل */
-            position: relative;
-            bottom: 0;
-            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0; /* يمنع الفوتر من الارتفاع أو الانكماش */
         }
 
         .input-wrapper {
             flex: 1; 
             background: #1c1c1e; 
-            border-radius: 25px; 
+            border-radius: 22px; 
             display: flex; 
             align-items: center; 
             padding: 0 15px;
             border: 1px solid #333;
         }
-
+        
         #msgInput { 
             flex: 1; 
             padding: 10px 0; 
             border: none; 
             background: transparent; 
             outline: none; 
+            font-size: 15px; 
             color: #fff;
-            font-size: 16px;
         }
 
         /* تصميم الرسائل */
         .message { 
             max-width: 75%; 
             padding: 10px 14px; 
-            border-radius: 18px; 
+            border-radius: 20px; 
             font-size: 15px; 
             word-wrap: break-word; 
-            color: white;
+            line-height: 1.4;
+            color: #fff;
         }
-        .sent { align-self: flex-end; background: #0084ff; border-bottom-right-radius: 4px; }
-        .received { align-self: flex-start; background: #262626; border-bottom-left-radius: 4px; }
-        .user-label { font-size: 10px; color: #888; margin-bottom: 2px; align-self: flex-start; margin-right: 10px;}
+        .sent { 
+            align-self: flex-end; 
+            background: linear-gradient(135deg, #0078ff 0%, #00c6ff 100%);
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 120, 255, 0.2);
+        }
+        .received { 
+            align-self: flex-start; 
+            background-color: #262626; 
+            border-bottom-left-radius: 4px;
+        }
+        .user-tag { font-size: 10px; color: #888; margin-bottom: 2px; margin-right: 5px; }
 
-        .icon-btn { color: #0084ff; font-size: 22px; cursor: pointer; background: none; border: none; }
-        
+        /* الأيقونات والأزرار */
+        .btn-icon { color: #0084ff; font-size: 22px; cursor: pointer; background: none; border: none; display: flex; align-items: center; }
+        .send-btn { font-size: 24px; }
+
         /* واجهة الدخول */
         #overlay { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        .login-card { width: 90%; max-width: 340px; text-align: center; color: white; }
-        .m-input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #333; background: #111; color: white; }
-        .m-btn { width: 100%; padding: 14px; background: #0084ff; border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; }
+        .card { width: 85%; max-width: 340px; text-align: center; color: #fff; }
+        .m-input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #333; background: #111; color: #fff; text-align: center; }
+        .m-btn { width: 100%; padding: 14px; background: #0084ff; color: #fff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        .recording-active { color: #ff3b30 !important; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0.5; } }
+        .recording-active { color: #ff3b30 !important; animation: pulse 1s infinite; }
+        @keyframes pulse { 50% { opacity: 0.5; } }
         .hidden { display: none !important; }
-        .msg-img { max-width: 100%; border-radius: 12px; margin-top: 5px; }
+        .msg-img { max-width: 100%; border-radius: 15px; margin-top: 5px; }
+        audio { height: 35px; width: 170px; filter: invert(1); margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div id="overlay">
-    <div id="step-name" class="login-card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/b/be/Facebook_Messenger_logo_2020.svg" width="70" style="margin-bottom: 20px;">
-        <h2>سجل دخولك</h2>
+    <div id="step-name" class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/be/Facebook_Messenger_logo_2020.svg" width="80" style="margin-bottom: 20px;">
+        <h2>مرحباً بك</h2>
         <input type="text" id="username-input" class="m-input" placeholder="اسمك المستعار">
         <button class="m-btn" onclick="saveUsername()">دخول</button>
     </div>
-    <div id="step-choice" class="login-card hidden">
+    <div id="step-choice" class="card hidden">
+        <h2>الغرف</h2>
         <button class="m-btn" onclick="showPrivateForm()">دخول غرفة خاصة</button>
     </div>
-    <div id="step-private" class="login-card hidden">
+    <div id="step-private" class="card hidden">
         <input type="text" id="room-name-input" class="m-input" placeholder="اسم الغرفة">
         <input type="password" id="room-pass-input" class="m-input" placeholder="كلمة السر">
         <button class="m-btn" onclick="joinPrivate()">تأكيد</button>
@@ -130,23 +144,23 @@
 </div>
 
 <header>
-    <button class="icon-btn" onclick="location.reload()" style="font-size: 18px;"><i class="fas fa-arrow-right"></i></button>
+    <button class="btn-icon" onclick="location.reload()" style="font-size: 18px;"><i class="fas fa-sign-out-alt"></i></button>
     <div class="header-info">
         <h1 id="room-display">Messenger</h1>
-        <div style="font-size: 11px; color: #31a24c;">نشط الآن</div>
+        <div class="online-status">● متصل الآن</div>
     </div>
-    <div style="width: 22px; color: #0084ff;"><i class="fas fa-info-circle"></i></div>
+    <div style="width: 30px; color: #0084ff; text-align: left;"><i class="fas fa-info-circle"></i></div>
 </header>
 
 <div id="chat-box"></div>
 
 <footer>
-    <button class="icon-btn" onclick="sendImageUrl()"><i class="fas fa-image"></i></button>
+    <button class="btn-icon" onclick="sendImageUrl()" title="إرسال صورة"><i class="fas fa-image"></i></button>
     <div class="input-wrapper">
         <input type="text" id="msgInput" placeholder="Aa" autocomplete="off">
-        <button class="icon-btn" id="recordBtn" onclick="toggleRecording()"><i class="fas fa-microphone" id="micIcon" style="font-size: 18px;"></i></button>
+        <button class="btn-icon" id="recordBtn" onclick="toggleRecording()"><i class="fas fa-microphone" id="micIcon" style="font-size: 19px;"></i></button>
     </div>
-    <button class="icon-btn" onclick="sendMessage()"><i class="fas fa-paper-plane" style="font-size: 24px;"></i></button>
+    <button class="btn-icon send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -207,7 +221,7 @@
             
             if(!isMe) {
                 const label = document.createElement("div");
-                label.className = "user-label";
+                label.className = "user-tag";
                 label.innerText = d.user;
                 box.appendChild(label);
             }
@@ -216,7 +230,7 @@
             mDiv.className = `message ${isMe ? 'sent' : 'received'}`;
             
             if(d.type === 'image') mDiv.innerHTML = `<img src="${d.url}" class="msg-img">`;
-            else if(d.type === 'voice') mDiv.innerHTML = `<audio controls src="${d.audio}" style="width:170px;"></audio>`;
+            else if(d.type === 'voice') mDiv.innerHTML = `<audio controls src="${d.audio}"></audio>`;
             else mDiv.innerText = d.text;
 
             box.appendChild(mDiv);
@@ -242,7 +256,7 @@
                 mediaRecorder.start();
                 isRecording = true;
                 icon.classList.add('recording-active');
-            } catch(e) { alert("أذن الميكروفون مرفوض"); }
+            } catch(e) { alert("الميكروفون مطلوب"); }
         } else {
             mediaRecorder.stop();
             isRecording = false;
@@ -266,4 +280,5 @@
     document.getElementById("msgInput").addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
 </script>
 </body>
-</html>
+        </html>
+        
