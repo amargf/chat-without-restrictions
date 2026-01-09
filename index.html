@@ -2,20 +2,31 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>واتساب العرب - النسخة الكاملة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>واتساب العرب - نسخة المتصفح</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #0b141a; margin: 0; display: flex; flex-direction: column; height: 100vh; color: white; overflow: hidden; }
-        header { background-color: #202c33; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b4a54; }
+        /* إصلاح الهيكل لضمان ظهور العناصر في المتصفح */
+        html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #0b141a; display: flex; flex-direction: column; color: white; }
+        
+        header { background-color: #202c33; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b4a54; flex-shrink: 0; }
+        
+        /* منطقة الدردشة المرنة */
         #chat-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-color: rgba(11, 20, 26, 0.9); background-blend-mode: overlay; }
+        
         .message { max-width: 75%; padding: 8px 12px; border-radius: 10px; font-size: 15px; word-wrap: break-word; }
         .sent { align-self: flex-end; background-color: #005c4b; }
         .received { align-self: flex-start; background-color: #202c33; }
         .msg-img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
-        footer { background: #202c33; padding: 10px; display: flex; gap: 8px; align-items: center; }
-        #msgInput { flex: 1; padding: 10px; border-radius: 20px; border: none; background: #2a3942; color: white; outline: none; }
-        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #8696a0; }
+
+        /* تثبيت شريط الإرسال في الأسفل بقوة */
+        footer { background: #202c33; padding: 12px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; position: relative; bottom: 0; width: 100%; box-sizing: border-box; }
         
+        #msgInput { flex: 1; padding: 12px; border-radius: 20px; border: none; background: #2a3942; color: white; outline: none; font-size: 16px; }
+        .icon-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: #8696a0; padding: 0 5px; }
+        .send-btn { background: #00a884; border: none; border-radius: 50%; width: 45px; height: 45px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
+
+        /* واجهة الاختيار */
         #overlay { position: fixed; inset: 0; background: #0b141a; display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
         .modal-card { background: #222e35; padding: 30px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; border: 1px solid #3b4a54; }
         .custom-btn { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold; }
@@ -32,13 +43,11 @@
         <input type="text" id="username-input" class="modern-input" placeholder="اسمك المستعار">
         <button class="custom-btn btn-green" onclick="saveUsername()">متابعة</button>
     </div>
-
     <div id="step-choice" class="modal-card hidden">
         <h2>اختر نوع الدردشة</h2>
         <button class="custom-btn btn-green" onclick="joinPublic()">الشات العام</button>
         <button class="custom-btn" style="background:#202c33; color:#00a884; border:1px solid #00a884;" onclick="showPrivateForm()">غرفة خاصة</button>
     </div>
-
     <div id="step-private" class="modal-card hidden">
         <h2>بيانات الغرفة</h2>
         <input type="text" id="room-name-input" class="modern-input" placeholder="اسم الغرفة">
@@ -58,7 +67,7 @@
 <footer>
     <button class="icon-btn" onclick="sendImageUrl()">🖼️</button>
     <input type="text" id="msgInput" placeholder="اكتب رسالة...">
-    <button onclick="sendMessage()" style="background:#00a884; border:none; border-radius:50%; width:40px; height:40px; color:white; cursor:pointer;">></button>
+    <button class="send-btn" onclick="sendMessage()">➤</button>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
