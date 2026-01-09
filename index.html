@@ -3,91 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>واتساب العرب - احترافي</title>
+    <title>واتساب العرب - نظام الغرف</title>
     <style>
-        /* التعديل الأهم لمنع الريفريش في التطبيقات */
+        /* إعدادات الشاشة ومنع الريفريش */
+        * { box-sizing: border-box; }
         body, html { 
             margin: 0; padding: 0; height: 100%; width: 100%; 
             background-color: #0b141a; color: white; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             overflow: hidden; 
-            overscroll-behavior-y: none !important; /* منع الريفريش برمجياً */
+            overscroll-behavior-y: none !important; /* منع سحب الصفحة للتحديث */
         }
-        
-        #app-wrapper { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
 
-        header { background-color: #202c33; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b4a54; z-index: 10; flex-shrink: 0; }
+        #app-wrapper { display: flex; flex-direction: column; height: 100vh; }
+
+        /* الهيدر */
+        header { 
+            background-color: #202c33; padding: 12px 16px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid #3b4a54; flex-shrink: 0; z-index: 10;
+        }
         #room-display { font-size: 14px; color: #00a884; font-weight: bold; }
-        .exit-btn { background: #ea0038; color: white; border: none; padding: 5px 12px; border-radius: 15px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        
-        #overlay { position: fixed; inset: 0; background: #0b141a; display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-        .modal-card { background: #222e35; padding: 30px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #3b4a54; }
-        
-        .custom-btn { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-green { background-color: #00a884; color: white; }
-        .btn-outline { background-color: transparent; color: #00a884; border: 2px solid #00a884; }
-        
-        .hidden { display: none !important; }
-        input.modern-input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #3b4a54; background: #2a3942; color: white; outline: none; text-align: center; }
+        .exit-btn { background: #ea0038; color: white; border: none; padding: 6px 15px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; }
 
+        /* منطقة الدردشة - صعود حر */
         #chat-box { 
-            flex: 1; 
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; 
-            padding: 15px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 8px; 
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); 
-            background-blend-mode: overlay; 
-            background-color: rgba(11, 20, 26, 0.9);
-            overscroll-behavior-y: contain; /* حصر التمرير داخل الشات */
+            flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; 
+            padding: 15px; display: flex; flex-direction: column; gap: 10px;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-color: rgba(11, 20, 26, 0.92); background-blend-mode: overlay;
+            overscroll-behavior-y: contain;
         }
 
-        .message { max-width: 75%; padding: 8px 12px; border-radius: 10px; font-size: 15px; word-wrap: break-word; }
+        .message { max-width: 80%; padding: 10px; border-radius: 10px; font-size: 15px; position: relative; line-height: 1.4; }
         .sent { align-self: flex-end; background-color: #005c4b; border-bottom-right-radius: 2px; }
         .received { align-self: flex-start; background-color: #202c33; border-bottom-left-radius: 2px; }
+        .user-label { font-size: 11px; font-weight: bold; margin-bottom: 3px; display: block; }
+
+        /* الفوتر */
+        footer { background: #202c33; padding: 10px; display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+        #msgInput { flex: 1; padding: 12px 18px; border: none; border-radius: 25px; background: #2a3942; color: white; outline: none; font-size: 15px; }
+        .send-btn { background-color: #00a884; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+
+        /* نظام الواجهات (Overlay) */
+        #overlay { position: fixed; inset: 0; background: #0b141a; display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .modal-card { background: #222e35; padding: 30px; border-radius: 25px; width: 100%; max-width: 360px; text-align: center; border: 1px solid #3b4a54; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        .hidden { display: none !important; }
         
-        footer { background: #202c33; padding: 10px; display: flex; gap: 8px; flex-shrink: 0; }
-        #msgInput { flex: 1; padding: 12px; border: none; border-radius: 20px; background: #2a3942; color: white; outline: none; }
+        .modern-input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #3b4a54; background: #2a3942; color: white; text-align: center; font-size: 16px; outline: none; }
+        .main-btn { width: 100%; padding: 14px; margin-top: 10px; border: none; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-green { background: #00a884; color: white; }
+        .btn-outline { background: transparent; color: #00a884; border: 2px solid #00a884; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div id="overlay">
     <div id="step-name" class="modal-card">
-        <h2>أهلاً بك</h2>
-        <input type="text" id="username-input" class="modern-input" placeholder="اسمك المستعار">
-        <button class="custom-btn btn-green" onclick="saveUsername()">دخول</button>
+        <h2 style="margin-top:0">واتساب العرب</h2>
+        <p style="color:#8696a0">أدخل اسمك المستعار للبدء</p>
+        <input type="text" id="username-input" class="modern-input" placeholder="مثلاً: بطل الجزائر">
+        <button class="main-btn btn-green" onclick="saveUsername()">استمرار</button>
     </div>
 
     <div id="step-choice" class="modal-card hidden">
-        <h2>واتساب العرب</h2>
-        <button class="custom-btn btn-green" onclick="joinPublic()">الشات العام</button>
-        <button class="custom-btn btn-outline" onclick="showPrivateForm()">غرفة خاصة</button>
+        <h2>اختر وجهتك</h2>
+        <button class="main-btn btn-green" onclick="joinPublic()">دخول الشات العام</button>
+        <button class="main-btn btn-outline" onclick="showPrivateForm()">إنشاء/دخول غرفة خاصة</button>
     </div>
 
     <div id="step-private" class="modal-card hidden">
         <h2>غرفة خاصة</h2>
         <input type="text" id="room-name-input" class="modern-input" placeholder="اسم الغرفة">
         <input type="password" id="room-pass-input" class="modern-input" placeholder="كلمة السر">
-        <button class="custom-btn btn-green" onclick="joinPrivate()">دخول</button>
-        <button class="custom-btn" style="background:none; color:#8696a0" onclick="backToChoice()">إلغاء</button>
+        <button class="main-btn btn-green" onclick="joinPrivate()">دخول الآن</button>
+        <button style="background:none; border:none; color:#8696a0; margin-top:15px; cursor:pointer;" onclick="backToChoice()">رجوع للخلف</button>
     </div>
 </div>
 
 <div id="app-wrapper">
     <header>
         <button class="exit-btn" onclick="logout()">خروج</button>
-        <div id="room-display">الرئيسية</div>
+        <div id="room-display">جاري التحميل...</div>
         <div style="width:40px"></div> 
     </header>
 
     <div id="chat-box"></div>
 
     <footer>
-        <input type="text" id="msgInput" placeholder="اكتب رسالة...">
-        <button class="btn-green" style="border:none; border-radius:50%; width:45px; height:45px; cursor:pointer" onclick="sendMessage()">➤</button>
+        <input type="text" id="msgInput" placeholder="اكتب رسالتك هنا...">
+        <button class="send-btn" onclick="sendMessage()">➤</button>
     </footer>
 </div>
 
@@ -102,20 +107,18 @@
     let messagesRef = null;
     const chatBox = document.getElementById('chat-box');
 
-    // كود الحماية من الريفريش عند السحب من الأعلى
+    // الحل النهائي لمنع الريفريش مع السماح بالصعود
     let startY = 0;
-    document.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].pageY;
-    }, {passive: false});
-
+    document.addEventListener('touchstart', (e) => { startY = e.touches[0].pageY; }, {passive: false});
     document.addEventListener('touchmove', (e) => {
-        const moveY = e.touches[0].pageY;
-        // إذا كنت في أعلى الشات وتحاول السحب لأسفل (منع الريفريش)
-        if (chatBox.scrollTop === 0 && moveY > startY) {
+        let moveY = e.touches[0].pageY;
+        // إذا كان المستخدم في أعلى الشات ويسحب لأسفل (لمنع الريفريش)
+        if (chatBox.scrollTop <= 0 && moveY > startY) {
             if (e.cancelable) e.preventDefault();
         }
     }, {passive: false});
 
+    // إدارة واجهات الدخول
     if(currentUsername) {
         document.getElementById('step-name').classList.add('hidden');
         document.getElementById('step-choice').classList.remove('hidden');
@@ -131,19 +134,6 @@
         }
     }
 
-    function logout() {
-        if(messagesRef) messagesRef.off();
-        chatBox.innerHTML = "";
-        document.getElementById("overlay").classList.remove("hidden");
-        document.getElementById('step-choice').classList.remove('hidden');
-        document.getElementById('step-private').classList.add('hidden');
-    }
-
-    function joinPublic() {
-        document.getElementById("overlay").classList.add("hidden");
-        setupChat("الشات العام", "public_chat");
-    }
-
     function showPrivateForm() {
         document.getElementById('step-choice').classList.add('hidden');
         document.getElementById('step-private').classList.remove('hidden');
@@ -154,22 +144,37 @@
         document.getElementById('step-choice').classList.remove('hidden');
     }
 
-    function joinPrivate() {
-        let roomName = document.getElementById('room-name-input').value.trim() || "عام";
-        let roomPass = document.getElementById('room-pass-input').value.trim();
-        if(!roomPass) return;
+    function logout() {
+        if(messagesRef) messagesRef.off();
+        chatBox.innerHTML = "";
+        document.getElementById("overlay").classList.remove("hidden");
+        document.getElementById('step-choice').classList.remove('hidden');
+        document.getElementById('step-private').classList.add('hidden');
+    }
 
-        const roomRef = firebase.database().ref("room_settings/" + roomName);
+    // ربط الغرف
+    function joinPublic() {
+        document.getElementById("overlay").classList.add("hidden");
+        setupChat("الشات العام", "public_chat");
+    }
+
+    function joinPrivate() {
+        const rName = document.getElementById('room-name-input').value.trim();
+        const rPass = document.getElementById('room-pass-input').value.trim();
+        if(!rName || !rPass) return alert("أكمل البيانات");
+
+        const roomRef = firebase.database().ref("room_settings/" + rName);
         roomRef.once('value').then((snapshot) => {
             const data = snapshot.val();
             document.getElementById("overlay").classList.add("hidden");
             if (!data) {
-                roomRef.set({ password: roomPass });
-                setupChat("غرفة: " + roomName, "private_" + roomName);
-            } else if (data.password === roomPass) {
-                setupChat("غرفة: " + roomName, "private_" + roomName);
+                roomRef.set({ password: rPass });
+                setupChat("غرفة: " + rName, "private_" + rName);
+            } else if (data.password === rPass) {
+                setupChat("غرفة: " + rName, "private_" + rName);
             } else {
-                setupChat("غرفة: " + roomName, "fake_room");
+                alert("كلمة سر خاطئة!");
+                location.reload();
             }
         });
     }
@@ -178,26 +183,26 @@
         document.getElementById("room-display").innerText = displayName;
         messagesRef = firebase.database().ref("messages/" + dbPath);
 
-        window.sendMessage = function() {
-            const input = document.getElementById("msgInput");
-            if (input.value.trim() !== "" && messagesRef) {
-                messagesRef.push({ user: currentUsername, text: input.value });
-                input.value = "";
-            }
-        };
-
         messagesRef.on("child_added", (snapshot) => {
             const data = snapshot.val();
             const msgDiv = document.createElement("div");
             const isMe = data.user === currentUsername;
             msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
-            msgDiv.innerHTML = `<small style="color:${isMe ? '#8696a0' : '#ffd700'}">${data.user}</small><br>${data.text}`;
+            msgDiv.innerHTML = `<span class="user-label" style="color:${isMe ? '#8696a0' : '#ffd700'}">${data.user}</span>${data.text}`;
             chatBox.appendChild(msgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     }
+
+    function sendMessage() {
+        const input = document.getElementById("msgInput");
+        if (input.value.trim() !== "" && messagesRef) {
+            messagesRef.push({ user: currentUsername, text: input.value });
+            input.value = "";
+        }
+    }
+
     document.getElementById("msgInput").addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 </script>
 </body>
-    </html>
-    
+</html>
