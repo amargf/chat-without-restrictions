@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>واتساب العرب Pro</title>
+    <title>واتساب العرب Pro - النسخة الكاملة</title>
     <style>
         :root {
             --bg-main: #0b141a;
@@ -17,7 +17,7 @@
         html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-main); display: flex; flex-direction: column; color: white; }
         
-        header { background-color: var(--bg-header); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b4a54; z-index: 10; }
+        header { background-color: var(--bg-header); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b4a54; z-index: 10; flex-shrink: 0; }
         
         #chat-box { 
             flex: 1; 
@@ -33,12 +33,13 @@
         
         .message { 
             max-width: 80%; 
-            padding: 6px 10px; 
+            padding: 8px 12px; 
             border-radius: 8px; 
             font-size: 15px; 
             position: relative; 
             box-shadow: 0 1px 1px rgba(0,0,0,0.2);
             line-height: 1.4;
+            word-wrap: break-word;
         }
         .sent { align-self: flex-end; background-color: var(--sent-msg); border-top-left-radius: 0; }
         .received { align-self: flex-start; background-color: var(--received-msg); border-top-right-radius: 0; }
@@ -47,18 +48,18 @@
         .msg-time { font-size: 10px; color: var(--text-gray); float: left; margin-top: 5px; margin-right: 8px; }
         .msg-img { max-width: 100%; border-radius: 5px; margin: 5px 0; display: block; }
 
-        footer { background: var(--bg-header); padding: 10px; display: flex; gap: 10px; align-items: center; }
+        footer { background: var(--bg-header); padding: 10px; display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
         #msgInput { flex: 1; padding: 12px 15px; border-radius: 25px; border: none; background: #2a3942; color: white; outline: none; font-size: 16px; }
         
-        .send-btn { background: var(--accent); border: none; border-radius: 50%; width: 45px; height: 45px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .send-btn { background: var(--accent); border: none; border-radius: 50%; width: 45px; height: 45px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 20px; }
         .send-btn:active { transform: scale(0.9); }
 
-        /* Modals */
+        /* الواجهات المنبثقة */
         #overlay { position: fixed; inset: 0; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
         .modal-card { background: #222e35; padding: 30px; border-radius: 15px; width: 100%; max-width: 350px; text-align: center; border: 1px solid #3b4a54; }
         .custom-btn { width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-green { background-color: var(--accent); color: #0b141a; }
-        .modern-input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #3b4a54; background: #2a3942; color: white; box-sizing: border-box; }
+        .modern-input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #3b4a54; background: #2a3942; color: white; box-sizing: border-box; text-align: center; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -68,29 +69,29 @@
     <div id="step-name" class="modal-card">
         <h2 style="color:var(--accent)">مرحباً بك</h2>
         <p>اختر اسماً مستعاراً للبدء</p>
-        <input type="text" id="username-input" class="modern-input" placeholder="اسمك هنا...">
-        <button class="custom-btn btn-green" onclick="saveUsername()">دخول</button>
+        <input type="text" id="username-input" class="modern-input" placeholder="اسمك المستعار">
+        <button class="custom-btn btn-green" onclick="saveUsername()">متابعة</button>
     </div>
     
     <div id="step-choice" class="modal-card hidden">
         <h2>نوع الدردشة</h2>
         <button class="custom-btn btn-green" onclick="joinPublic()">الشات العام</button>
-        <button class="custom-btn" style="background:#2a3942; color:white;" onclick="showPrivateForm()">غرفة خاصة (برمز سر)</button>
+        <button class="custom-btn" style="background:#2a3942; color:white;" onclick="showPrivateForm()">غرفة خاصة</button>
     </div>
 
     <div id="step-private" class="modal-card hidden">
-        <h2>إنشاء/دخول غرفة</h2>
+        <h2>بيانات الغرفة</h2>
         <input type="text" id="room-name-input" class="modern-input" placeholder="اسم الغرفة">
         <input type="password" id="room-pass-input" class="modern-input" placeholder="كلمة السر">
-        <button class="custom-btn btn-green" onclick="joinPrivate()">دخول الغرفة</button>
+        <button class="custom-btn btn-green" onclick="joinPrivate()">دخول</button>
         <button class="custom-btn" style="background:transparent; color:var(--text-gray)" onclick="location.reload()">رجوع</button>
     </div>
 </div>
 
 <header>
-    <button onclick="location.reload()" style="background:#ea0038; border:none; color:white; border-radius:8px; padding:6px 15px; cursor:pointer; font-weight:bold;">خروج</button>
+    <button onclick="location.reload()" style="background:#ea0038; border:none; color:white; border-radius:8px; padding:6px 12px; cursor:pointer; font-weight:bold;">خروج</button>
     <div id="room-display" style="font-weight:bold">الرئيسية</div>
-    <div id="user-display" style="font-size:12px; color:var(--accent)"></div>
+    <div id="user-display" style="font-size:11px; color:var(--accent)"></div>
 </header>
 
 <div id="chat-box"></div>
@@ -105,18 +106,18 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-    // الإعدادات
+    // تكوين Firebase
     const firebaseConfig = { databaseURL: "https://khadimalarab-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
 
     let currentUsername = localStorage.getItem("chat_user");
     let messagesRef = null;
 
-    // توليد لون عشوائي بناءً على الاسم
+    // تلوين الأسماء تلقائياً
     function stringToColor(str) {
         let hash = 0;
         for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
-        return `hsl(${hash % 360}, 70%, 70%)`;
+        return `hsl(${hash % 360}, 75%, 75%)`;
     }
 
     if(currentUsername) {
@@ -127,7 +128,7 @@
 
     function saveUsername() {
         const val = document.getElementById('username-input').value.trim();
-        if(val.length < 2) return alert("الاسم قصير جداً");
+        if(!val) return;
         currentUsername = val;
         localStorage.setItem("chat_user", val);
         document.getElementById('user-display').innerText = val;
@@ -146,9 +147,9 @@
     }
 
     function joinPrivate() {
-        let roomName = document.getElementById('room-name-input').value.trim();
+        let roomName = document.getElementById('room-name-input').value.trim() || "غرفة_خاصة";
         let roomPass = document.getElementById('room-pass-input').value.trim();
-        if(!roomName || !roomPass) return alert("يرجى ملء البيانات");
+        if(!roomPass) return alert("يرجى إدخال كلمة سر");
 
         const roomRef = firebase.database().ref("room_settings/" + roomName);
         roomRef.once('value').then((snapshot) => {
@@ -159,7 +160,7 @@
             } else if (data.password === roomPass) {
                 startPrivate(roomName);
             } else {
-                alert("كلمة السر خاطئة لهذه الغرفة");
+                alert("كلمة السر خاطئة!");
             }
         });
     }
@@ -173,8 +174,7 @@
         document.getElementById("room-display").innerText = displayName;
         messagesRef = firebase.database().ref("messages/" + dbPath);
 
-        // تحميل الرسائل (آخر 50 رسالة فقط للأداء)
-        messagesRef.limitToLast(50).on("child_added", (snapshot) => {
+        messagesRef.limitToLast(100).on("child_added", (snapshot) => {
             const data = snapshot.val();
             const chatBox = document.getElementById("chat-box");
             const isMe = data.user === currentUsername;
@@ -182,16 +182,16 @@
             const msgDiv = document.createElement("div");
             msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
             
-            // حماية من الاختراق وتنسيق المحتوى
             const userSpan = `<span class="msg-user" style="color:${stringToColor(data.user)}">${data.user}</span>`;
             const timeSpan = `<span class="msg-time">${data.time || ''}</span>`;
             
             if(data.type === 'image') {
                 msgDiv.innerHTML = `${userSpan}<img src="${data.url}" class="msg-img">${timeSpan}`;
             } else {
-                const textNode = document.createTextNode(data.text);
+                const textContent = document.createElement('span');
+                textContent.textContent = data.text; // حماية من الأكواد الخبيثة
                 msgDiv.innerHTML = userSpan;
-                msgDiv.appendChild(textNode);
+                msgDiv.appendChild(textContent);
                 msgDiv.innerHTML += timeSpan;
             }
 
@@ -203,32 +203,39 @@
     function sendMessage() {
         const input = document.getElementById("msgInput");
         const text = input.value.trim();
+
         if (text !== "" && messagesRef) {
             const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
             messagesRef.push({ 
                 user: currentUsername, 
                 text: text, 
                 type: 'text',
                 time: now
             });
-            input.value = "";
-            input.focus();
+
+            input.value = ""; // مسح الحقل
+
+            // --- التعديل المطلوب: إخفاء لوحة المفاتيح في أي غرفة ---
+            input.blur(); 
         }
     }
+
+    // إخفاء لوحة المفاتيح عند لمس منطقة الشات (مثل التطبيقات الحقيقية)
+    document.getElementById("chat-box").addEventListener("touchstart", function() {
+        document.getElementById("msgInput").blur();
+    });
 
     function sendImageUrl() {
-        const url = prompt("أدخل رابط الصورة (Direct Link):");
+        const url = prompt("الصق رابط الصورة هنا:");
         if(url && messagesRef) {
             const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            messagesRef.push({ 
-                user: currentUsername, 
-                url: url, 
-                type: 'image',
-                time: now 
-            });
+            messagesRef.push({ user: currentUsername, url: url, type: 'image', time: now });
+            document.getElementById("msgInput").blur(); // إغلاق اللوحة بعد الإرسال أيضاً
         }
     }
 
+    // الإرسال عند الضغط على Enter
     document.getElementById("msgInput").addEventListener("keypress", (e) => { 
         if (e.key === "Enter") sendMessage(); 
     });
