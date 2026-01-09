@@ -3,45 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خادم العرب - دردشة مستمرة</title>
+    <title>واتساب العرب</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #e5ddd5; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        header { background-color: #075e54; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; }
-        #chat-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .message { max-width: 70%; padding: 8px 12px; border-radius: 10px; font-size: 16px; word-wrap: break-word; }
-        .sent { align-self: flex-end; background-color: #dcf8c6; border: 1px solid #cdedac; }
-        .received { align-self: flex-start; background-color: white; border: 1px solid #ddd; }
-        .username { font-weight: bold; font-size: 12px; display: block; color: #075e54; }
-        footer { background: white; padding: 10px; display: flex; gap: 10px; border-top: 1px solid #ccc; }
-        input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; }
-        button { background-color: #075e54; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
+        body { font-family: Arial, sans-serif; background-color: #0b141a; margin: 0; display: flex; flex-direction: column; height: 100vh; color: white; }
+        header { background-color: #202c33; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; border-bottom: 1px solid #3b4a54; }
+        #chat-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
+        .message { max-width: 75%; padding: 8px 12px; border-radius: 10px; font-size: 15px; word-wrap: break-word; position: relative; }
+        .sent { align-self: flex-end; background-color: #005c4b; color: #e9edef; }
+        .received { align-self: flex-start; background-color: #202c33; color: #e9edef; }
+        .user-label { font-size: 11px; color: #ffd700; font-weight: bold; display: block; margin-bottom: 2px; }
+        footer { background: #202c33; padding: 10px; display: flex; gap: 8px; }
+        input { flex: 1; padding: 12px; border: none; border-radius: 20px; background: #2a3942; color: white; outline: none; }
+        button { background-color: #00a884; color: white; border: none; padding: 10px 18px; border-radius: 50%; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<header>خادم العرب (مباشر)</header>
+<header>واتساب العرب - مباشر</header>
 <div id="chat-box"></div>
 
 <footer>
-    <input type="text" id="msgInput" placeholder="اكتب رسالتك هنا...">
-    <button onclick="sendMessage()">إرسال</button>
+    <input type="text" id="msgInput" placeholder="اكتب رسالة...">
+    <button onclick="sendMessage()">></button>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
+    // الإعدادات المربوطة بقاعدة بياناتك الجديدة
     const firebaseConfig = {
-        databaseURL: "https://my-whatsapp-app-a316a-default-rtdb.firebaseio.com/"
+        databaseURL: "https://khadimalarab-default-rtdb.firebaseio.com/"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database().ref("messages");
 
-    // حفظ الاسم لكي لا يطلبه في كل مرة
     let username = localStorage.getItem("chat_user");
     if (!username) {
-        username = prompt("الرجاء إدخال اسمك للبدء بالدردشة:");
-        if (!username) username = "مستخدم_" + Math.floor(Math.random() * 100);
+        username = prompt("أهلاً بك! أدخل اسمك المستعار:");
+        if (!username || username.trim() === "") username = "عضو_" + Math.floor(Math.random() * 1000);
         localStorage.setItem("chat_user", username);
     }
 
@@ -51,32 +51,28 @@
             db.push({
                 user: username,
                 text: input.value,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
             });
             input.value = "";
         }
     }
 
-    // جلب الرسائل القديمة والجديدة وضمان بقائها
+    // جلب الرسائل القديمة والجديدة باستمرار
     db.on("child_added", (snapshot) => {
         const data = snapshot.val();
-        displayMessage(data.user, data.text);
-    });
-
-    function displayMessage(user, text) {
         const chatBox = document.getElementById("chat-box");
         const msgDiv = document.createElement("div");
-        msgDiv.className = `message ${user === username ? 'sent' : 'received'}`;
-        msgDiv.innerHTML = `<span class="username">${user}</span>${text}`;
+        const isMe = data.user === username;
+        
+        msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
+        msgDiv.innerHTML = `<span class="user-label">${isMe ? 'أنت' : data.user}</span>${data.text}`;
+        
         chatBox.appendChild(msgDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    document.getElementById("msgInput").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") sendMessage();
     });
+
+    document.getElementById("msgInput").addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
 </script>
 
 </body>
 </html>
-
